@@ -1,9 +1,9 @@
 import { Router } from "express";
-import userRoute from '../apiservices/user/user.router'
+import orderRoute from '../apiservices/order/order.router'
 import { authenticateJWT } from "../middlewares/authMiddleware";
 
 const router = Router();
 
-router.use("/", authenticateJWT, userRoute)
+router.use("/", orderRoute)
 
 export default router;
