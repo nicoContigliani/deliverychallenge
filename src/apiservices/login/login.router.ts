@@ -1,17 +1,15 @@
 import { Router } from "express";
 import { 
-    // deleteUsersController, 
-    // getOneUsersController, 
-    // getUserSController, 
-    postUsersController, 
-    // putUsersController 
-} from "./register.controllers";
+    // deleteUsersController, getOneUsersController, getUserSController,
+     postLoginController, 
+    //  putUsersController
+     } from "./login.controllers";
 
 const router = Router();
 
 // router.get ("/", getUserSController)
 
-router.post("/", postUsersController)
+router.post("/", postLoginController)
 
 // router.put("/:id", putUsersController)
 

@@ -6,9 +6,9 @@ import {
   updateDao,
   deletesDao,
   postBulkDao
-} from './registerDao'; // Asegúrate de ajustar la ruta
+} from './loginDao'; // Asegúrate de ajustar la ruta
 import { getByEmailDao } from "../user/userDao";
-import { bcryptCreatePassword } from "../../services/bcrypt.services";
+import { bcryptComparePassword } from "../../services/bcrypt.services";
 import { deletePassword } from "../../services/deletePassword";
 import { jwtGenerateToken } from "../../services/jwt.services";
 
@@ -23,36 +23,38 @@ import { jwtGenerateToken } from "../../services/jwt.services";
 // };
 
 // 2. Crear un nuevo usuario
-export const postUsersController = async (req: Request, res: Response): Promise<void> => {
+export const postLoginController = async (req: Request, res: Response): Promise<void> => {
   try {
-    let { fullname, email, password } = req.body;
+    const { email, password } = req.body;
 
-    // Value exist ?
-    if (!fullname || !email || !password) {
-      res.status(400).json({ message: "Todos los campos son obligatorios" });
-      return;
-    }
-    //if Exist?
-    const user = await getByEmailDao(email);
-    if (user) {
-      res.status(400).json({ message: "The user already exists" });
+    // Verificar si los campos son obligatorios
+    if (!email || !password) {
+      res.status(400).json({ message: "El correo y la contraseña son obligatorios" });
       return;
     }
 
-    // Encriptar contraseña
-    const hashedPassword = await bcryptCreatePassword(password);
+    const user:any = await getByEmailDao(email);
+    if (!user) {
+      res.status(400).json({ message: "Usuario no encontrado" });
+      return;
+    }
 
-    const newUser = await postDao({ fullname, email, password: hashedPassword });
+    const passwordMatch = await bcryptComparePassword(password, user.password);
+    if (!passwordMatch) {
+      res.status(400).json({ message: "Contraseña incorrecta" });
+      return;
+    }
 
-    const beforeDataJwt = await deletePassword(newUser)
-    const todo = await jwtGenerateToken(beforeDataJwt)
+    const beforeDataJwt = await deletePassword(user);
 
+    const token = await jwtGenerateToken(beforeDataJwt);
 
-    res.status(201).json({ data: beforeDataJwt, token: todo });
-    return; 
+    res.status(200).json({ data: beforeDataJwt, token });
+    return;
+
   } catch (error) {
-    console.error("Error al crear el usuario:", error);
-    res.status(500).json({ message: "Error al crear el usuario", error });
+    console.error("Error al iniciar sesión:", error);
+    res.status(500).json({ message: "Error al iniciar sesión", error });
     return;
   }
 };
