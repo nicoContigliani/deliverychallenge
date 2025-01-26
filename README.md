@@ -24,6 +24,9 @@ DB_HOST=localhost
 DB_NAME=deliverychallenge
 JWT_SIGNATURE_GENERAL=simon
 \`\`\`
+
+### Tables of DB
+
 \`\`\`
       CREATE TABLE "User" (\`\`\`
         "id" SERIAL PRIMARY KEY,\`\`\`
