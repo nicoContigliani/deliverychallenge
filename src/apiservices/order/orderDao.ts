@@ -88,15 +88,8 @@ export const deleteOrderDao = async (id: number, userId: number): Promise<Order 
 };
 
 
-// 6. insert bulk orders
-export const createBulkOrdersDao = async (orders: Partial<Order>[], userId: number): Promise<Order[]> => {
-  const orderRepository = AppDataSource.getRepository(Order);
-  const orderInstances = orders.map(order => ({ ...order, user: { id: userId } }));
-  const bulkOrders = orderRepository.create(orderInstances);
-  return await orderRepository.save(bulkOrders);
-};
 
-// 7. Get order status
+//  Get order status
 export const getOrderStatusDao = async (id: number): Promise<string | null> => {
   console.log(`Attempting to fetch order status for ID: ${id}`);
   const orderRepository = AppDataSource.getRepository(Order);
