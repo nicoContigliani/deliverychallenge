@@ -140,6 +140,13 @@ JWT_SIGNATURE_GENERAL=simon
 - **URL:** \`GET http://localhost:3000/api/orders/1/status\` (1 is the order ID)
 - **Headers:** \`Authorization: Bearer <token>\`
 
+## Additional Endpoints
+
+- \`POST /api/orders/bulk/:userId\`: Create multiple orders in bulk
+- \`GET /api/users/:id\`: Get a single user
+- \`PUT /api/users/:id\`: Update a user
+- \`DELETE /api/users/:id\`: Delete a user
+
 ## Note
 
 Always include the JWT token in the Authorization header for authenticated requests.
