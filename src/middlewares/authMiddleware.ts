@@ -8,7 +8,6 @@ declare global {
   }
 }
 
-// Middleware para proteger rutas con JWT
 export const authenticateJWT = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const token = req.headers.authorization?.split(' ')[1];
 
