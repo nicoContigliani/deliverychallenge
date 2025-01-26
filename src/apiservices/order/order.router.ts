@@ -8,14 +8,15 @@ import {
   createBulkOrdersController,
   getOrderStatusController
 } from './order.controllers';
+import { validateOrderCreate, validateOrderUpdate } from "../../middlewares/validationMiddleware";
 
 const router = Router();
 
 router.get('/:userId', getOrdersController);
-router.post('/:userId', createOrderController);
-router.put('/:id/:userId', updateOrderController);
+router.post('/:userId', validateOrderCreate, createOrderController);
+router.put('/:id/:userId', validateOrderUpdate, updateOrderController);
 router.delete('/:id/:userId', deleteOrderController);
-router.post('/bulk/:userId', createBulkOrdersController);
+router.post('/bulk/:userId', validateOrderCreate, createBulkOrdersController);
 router.get('/:id/status', getOrderStatusController);
 router.get('/:id/:userId', getOrderByIdController);
 

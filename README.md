@@ -24,6 +24,46 @@ DB_HOST=localhost
 DB_NAME=deliverychallenge
 JWT_SIGNATURE_GENERAL=simon
 \`\`\`
+\`\`\`
+      CREATE TABLE "User" (
+        "id" SERIAL PRIMARY KEY,
+        "fullname" VARCHAR(255) NULL,
+        "email" VARCHAR(255) UNIQUE NULL,
+        "password" VARCHAR(255) NULL
+      );
+\`\`\`
+\`\`\`      
+      CREATE TABLE "Item" (
+        "id" SERIAL PRIMARY KEY,
+        "name" VARCHAR(100) NOT NULL,
+        "description" TEXT NULL,
+        "price" NUMERIC NOT NULL
+      );
+\`\`\`
+\`\`\`      
+      CREATE TABLE "Order" (
+        "id" SERIAL PRIMARY KEY,
+        "orderDate" TIMESTAMP NOT NULL,
+        "status" VARCHAR(50) DEFAULT 'En preparación',
+        "totalAmount" NUMERIC NULL,
+        "isDeleted" boolean,
+        "userId" INT REFERENCES "User"(id) ON DELETE CASCADE
+      );
+\`\`\`
+ \`\`\`
+      CREATE TABLE "order_items" (
+        "order_id" INT REFERENCES "Order"(id) ON DELETE CASCADE,
+        "item_id" INT REFERENCES "Item"(id) ON DELETE CASCADE,
+        PRIMARY KEY ("order_id", "item_id")
+      );
+    `);
+\`\`\`
+\`\`\`
+
+
+
+
+
 
 ## API Endpoints
 
