@@ -87,18 +87,7 @@ export const getOrderByIdController = async (req: Request, res: Response): Promi
   }
 };
 
-// 6. Insert bulk orders
-export const createBulkOrdersController = async (req: Request, res: Response): Promise<void> => {
-  const { userId } = req.params; 
-  const { orders } = req.body;
 
-  try {
-    const newOrders = await createBulkOrdersDao(orders, Number(userId));
-    res.status(201).json(newOrders);
-  } catch (error) {
-    res.status(500).json({ message: "Error creating orders", error });
-  }
-};
 
 export const getOrderStatusController = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
