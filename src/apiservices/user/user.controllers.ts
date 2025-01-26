@@ -8,7 +8,7 @@ import {
   postBulkDao 
 } from './userDao'; // Asegúrate de ajustar la ruta
 
-// 1. Obtener todos los usuarios
+// 1. get users
 export const getUserSController = async (req: Request, res: Response): Promise<void> => {
   try {
     const users = await getDao();
@@ -18,7 +18,7 @@ export const getUserSController = async (req: Request, res: Response): Promise<v
   }
 };
 
-// 2. Crear un nuevo usuario
+// 2. Create users
 export const postUsersController = async (req: Request, res: Response): Promise<void> => {
   try {
     const { fullname, email, password } = req.body;
@@ -29,7 +29,7 @@ export const postUsersController = async (req: Request, res: Response): Promise<
   }
 };
 
-// 3. Actualizar un usuario existente
+// 3. Update users
 export const putUsersController = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const { fullname, email, password } = req.body;
@@ -46,7 +46,7 @@ export const putUsersController = async (req: Request, res: Response): Promise<v
   }
 };
 
-// 4. Eliminar un usuario por ID
+// 4. Delete users by ID
 export const deleteUsersController = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
@@ -62,7 +62,7 @@ export const deleteUsersController = async (req: Request, res: Response): Promis
   }
 };
 
-// 5. Obtener un usuario por ID
+// 5. Get user by ID
 export const getOneUsersController = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 

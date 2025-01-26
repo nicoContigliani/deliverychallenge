@@ -2,7 +2,7 @@ import { Order } from '../../entities/Order';
 import { AppDataSource } from '../../db';
 import { Item } from '../../entities/Item';
 
-// 1. Obtener todos los pedidos de un usuario
+// 1. Get order of a user
 export const getOrdersDao = async (userId: number): Promise<Order[]> => {
   console.log("🚀 ~ getOrdersDao ~ userId:", userId);
   const orderRepository = AppDataSource.getRepository(Order);
@@ -11,20 +11,20 @@ export const getOrdersDao = async (userId: number): Promise<Order[]> => {
     relations: ['user', 'items'],
   });
   console.log("🚀 ~ getOrdersDao ~ orders:", orders);
-  
+
   return orders;
 };
 
-// 2. Obtener un pedido por ID
+// 2. Get order by id
 export const getOrderByIdDao = async (id: number, userId: number): Promise<Order | null> => {
   const orderRepository = AppDataSource.getRepository(Order);
   return await orderRepository.findOne({
-    where: { id, user: { id: userId } }, // Asegura que el pedido pertenece al usuario
+    where: { id, user: { id: userId } },
     relations: ['user', 'orderItems'],
   });
 };
 
-// 3. Crear un nuevo pedido
+// 3. Create a new order
 export const createOrderDao = async (newOrder: Partial<Order>, userId: number, itemIds: number[]): Promise<Order> => {
   const orderRepository = AppDataSource.getRepository(Order);
 
@@ -33,9 +33,9 @@ export const createOrderDao = async (newOrder: Partial<Order>, userId: number, i
 
   // Create the order and associate the items
   const order = orderRepository.create({
-    ...newOrder, // Spread the newOrder
+    ...newOrder, 
     user: { id: userId },
-    items, // Add items explicitly
+    items, 
   });
 
   // Save the order along with its associated items
@@ -43,35 +43,33 @@ export const createOrderDao = async (newOrder: Partial<Order>, userId: number, i
 };
 
 
-// 4. Actualizar un pedido existente
+// 4. Update an existing order
 export const updateOrderDao = async (id: number, updatedOrder: Partial<Order>, userId: number): Promise<Order | null> => {
   const orderRepository = AppDataSource.getRepository(Order);
-  
-  // Buscar el pedido por id y userId
+
+  // Find the order by ID and user
   const order = await orderRepository.findOne({
     where: { id, user: { id: userId } },
-    relations: ['items'], // Asegúrate de traer la relación de items
+    relations: ['items'],
   });
 
   if (!order) {
     return null;
   }
 
-  // Actualiza las propiedades del pedido
+  // Update the order
   Object.assign(order, updatedOrder);
 
-  // Si los ítems están incluidos en el body, actualízalos
   if (updatedOrder.items) {
-    // Aquí, puedes asegurarte de que la relación de ítems se actualice correctamente
     order.items = updatedOrder.items;
   }
 
-  // Guardar el pedido con las actualizaciones
+
   return await orderRepository.save(order);
 };
 
 
-// 5. Eliminar un pedido por ID
+// 5. Delete an order by ID
 export const deleteOrderDao = async (id: number, userId: number): Promise<Order | null> => {
   const orderRepository = AppDataSource.getRepository(Order);
   const order = await orderRepository.findOne({
@@ -82,15 +80,15 @@ export const deleteOrderDao = async (id: number, userId: number): Promise<Order 
     return null;
   }
 
-  // Marcar el pedido como eliminado (borrado lógico)
+  // Mark the order as deleted
   order.isDeleted = true;
 
-  // Guardar los cambios
+  // Save the updated order
   return await orderRepository.save(order);
 };
 
 
-// 6. Insertar varios pedidos a la vez (Bulk insert)
+// 6. insert bulk orders
 export const createBulkOrdersDao = async (orders: Partial<Order>[], userId: number): Promise<Order[]> => {
   const orderRepository = AppDataSource.getRepository(Order);
   const orderInstances = orders.map(order => ({ ...order, user: { id: userId } }));
@@ -98,7 +96,7 @@ export const createBulkOrdersDao = async (orders: Partial<Order>[], userId: numb
   return await orderRepository.save(bulkOrders);
 };
 
-// 7. Obtener el estado de un pedido por ID
+// 7. Get order status
 export const getOrderStatusDao = async (id: number): Promise<string | null> => {
   console.log(`Attempting to fetch order status for ID: ${id}`);
   const orderRepository = AppDataSource.getRepository(Order);

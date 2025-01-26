@@ -24,8 +24,6 @@ app.use("/api/login", login);
 app.use("/api/users", userRoute);
 app.use("/api/orders", ordersRoute);
 
-
-
 app.get('/', (req, res) => {
     res.send('Ruta de prueba simple funcionando!');
 });

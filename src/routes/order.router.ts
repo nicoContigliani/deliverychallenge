@@ -4,6 +4,6 @@ import { authenticateJWT } from "../middlewares/authMiddleware";
 
 const router = Router();
 
-router.use("/", orderRoute)
+router.use("/", authenticateJWT, orderRoute)
 
 export default router;
