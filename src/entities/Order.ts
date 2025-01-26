@@ -26,4 +26,7 @@ export class Order {
     inverseJoinColumn: { name: 'item_id', referencedColumnName: 'id' },
   })
   items: Item[];
+
+  @Column({ type: 'boolean', default: false })
+  isDeleted: boolean;
 }

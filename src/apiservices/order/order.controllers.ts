@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-import { 
-  getOrdersDao, 
-  getOrderByIdDao, 
-  createOrderDao, 
-  updateOrderDao, 
-  deleteOrderDao, 
-  createBulkOrdersDao 
+import {
+  getOrdersDao,
+  getOrderByIdDao,
+  createOrderDao,
+  updateOrderDao,
+  deleteOrderDao,
+  createBulkOrdersDao,
+  getOrderStatusDao
 } from './orderDao'; // Asegúrate de ajustar la ruta
 
 // 1. Obtener todos los pedidos de un usuario
@@ -45,7 +46,7 @@ export const updateOrderController = async (req: Request, res: Response): Promis
 
   try {
     const updatedOrder = await updateOrderDao(Number(id), { items, totalAmount, status }, Number(userId));
-    
+
     if (updatedOrder) {
       res.status(200).json(updatedOrder);
     } else {
@@ -98,5 +99,34 @@ export const createBulkOrdersController = async (req: Request, res: Response): P
     res.status(201).json(newOrders);
   } catch (error) {
     res.status(500).json({ message: "Error al crear los pedidos", error });
+  }
+};
+
+
+export const getOrderStatusController = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  console.log(`Received request for order status. ID: ${id}`);
+
+  if (isNaN(Number(id))) {
+    console.log(`Invalid ID received: ${id}`);
+    res.status(400).json({ message: 'ID inválido' });
+    return;
+  }
+
+  try {
+    const status = await getOrderStatusDao(Number(id));
+    if (!status) {
+      console.log(`Order not found for ID: ${id}`);
+      res.status(404).json({ message: 'Pedido no encontrado' });
+      return;
+    }
+    console.log(`Returning status for order ${id}: ${status}`);
+    res.status(200).json({ status });
+  } catch (error) {
+    console.error('Error in getOrderStatusController:', error);
+    res.status(500).json({ 
+      message: 'Error al consultar el estado del pedido', 
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 };

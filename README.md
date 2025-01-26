@@ -1,46 +1,153 @@
 # Delivery Challenge API
 
-This document serves as the README for the Delivery Challenge API, which is a fullstack application built with a focus on user and order management.
+## Introduction
+
+The Delivery Challenge API is a fullstack application focused on user and order management. This README provides an overview of the API's functionality, setup instructions, and usage examples.
 
 ## Technologies
 
-* **Backend:** The backend is likely implemented using a framework like Node.js or Python (based on the `.env` file).
-* **Database:** The application uses a PostgreSQL database to store user and order data (as suggested by the DB_* environment variables).
-* **JWT:** The API utilizes JSON Web Tokens (JWT) for authentication, with a secret key stored in the JWT_SIGNATURE_GENERAL environment variable.
+- **Backend:** Node.js
+- **Database:** PostgreSQL
+- **Authentication:** JSON Web Tokens (JWT)
 
-## Environment Variables
+## Setup
 
-The `.env` file stores sensitive configuration details for the application. These variables should not be committed to version control.
+### Environment Variables
 
-* `PORT`: Defines the port on which the API server listens for incoming requests (default: 3000).
-* `DB_USER`: Username for the database connection (set to `root` in this example).
-* `DB_PASSWORD`: Password for the database connection (set to `postgres` in this example).
-* `DB_HOST`: Hostname or IP address of the database server (set to `localhost` in this example).
-* `DB_NAME`: Name of the database used by the application (set to `deliverychallenge` in this example).
-* `JWT_SIGNATURE_GENERAL`: Secret key used for signing JWT tokens (set to `simon` in this example).
+Create a \`.env\` file in the root directory with the following variables:
+
+\`\`\`
+PORT=3000
+DB_USER=root
+DB_PASSWORD=postgres
+DB_HOST=localhost
+DB_NAME=deliverychallenge
+JWT_SIGNATURE_GENERAL=simon
+\`\`\`
 
 ## API Endpoints
 
-The API offers a variety of endpoints for managing users and orders:
+### Authentication
 
-**Users:**
+#### Register a new user
 
-* `/`: GET request to retrieve all users (likely using a controller function named `getUserSController`).
-* `/`: POST request to create a new user (likely using a controller function named `postUsersController`).
-* `/:id`: PUT request to update an existing user with the specified ID (likely using a controller function named `putUsersController`).
-* `/:id`: DELETE request to delete a user with the specified ID (likely using a controller function named `deleteUsersController`).
-* `/:id`: GET request to retrieve a single user with the specified ID (likely using a controller function named `getOneUsersController`).
+- **URL:** \`POST http://localhost:3000/api/register\`
+- **Body:**
+  \`\`\`json
+  {
+    "fullname": "nico",
+    "email": "nico.contigliani@gmail.com",
+    "password": "123456789"
+  }
+  \`\`\`
 
-**Orders:**
+#### Login
 
-* `/:userId`: GET request to retrieve all orders for a specific user identified by `userId` (likely using a controller function named `getOrdersController`).
-* `/:userId`: POST request to create a new order for a user identified by `userId` (likely using a controller function named `createOrderController`).
-* `/:id/:userId`: PUT request to update an existing order with the specified ID belonging to the user identified by `userId` (likely using a controller function named `updateOrderController`).
-* `/:id/:userId`: DELETE request to delete an order with the specified ID belonging to the user identified by `userId` (likely using a controller function named `deleteOrderController`).
-* `/:id/:userId`: GET request to retrieve a specific order with the specified ID belonging to the user identified by `userId` (likely using a controller function named `getOrderByIdController`).
-* `/bulk/:userId`: POST request to create multiple orders in bulk for a user identified by `userId` (likely using a controller function named `createBulkOrdersController`).
+- **URL:** \`POST http://localhost:3000/api/login\`
+- **Body:**
+  \`\`\`json
+  {
+    "email": "nico.contigliani@gmail.com",
+    "password": "123456789"
+  }
+  \`\`\`
+- **Response:**
+  \`\`\`json
+  {
+    "data": {
+      "id": 1,
+      "fullname": "nico",
+      "email": "nico.contigliani@gmail.com"
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZnVsbG5hbWUiOiJuaWNvIiwiZW1haWwiOiJuaWNvLmNvbnRpZ2xpYW5pQGdtYWlsLmNvbSIsImlhdCI6MTczNzg3MDA5MiwiZXhwIjoxNzczODcwMDkyfQ.E9NRGB6Yfgf7w3m76Usbk3z5pKfj0DJhI45gN_1VLOY"
+  }
+  \`\`\`
 
-**Authentication:**
+### Users
 
-* `/login`: POST request for user login (likely using a controller function named `postLoginController`).
-* `/register`:  This endpoint seems to be incorrectly named as both register and postUsersController point to the same path. It's likely that this should be a POST request to `/register` for user registration (likely using the same `postUsersController` function).
+#### Get all users
+
+- **URL:** \`GET http://localhost:3000/api/users\`
+- **Headers:** \`Authorization: Bearer <token>\`
+
+### Orders
+
+#### Create an order
+
+- **URL:** \`POST http://localhost:3000/api/orders/1\` (1 is the user ID)
+- **Headers:** \`Authorization: Bearer <token>\`
+- **Body:**
+  \`\`\`json
+  {
+    "items": [
+      { "id": 1 },
+      { "id": 2 }
+    ],
+    "totalAmount": 100.0,
+    "status": "En preparación",
+    "isDeleted": false
+  }
+  \`\`\`
+- **Response:**
+  \`\`\`json
+  {
+    "status": "En preparación",
+    "totalAmount": 100,
+    "user": {
+      "id": 1
+    },
+    "items": [
+      {
+        "id": 1,
+        "name": "Milanesa",
+        "description": "Milanesa con papas",
+        "price": "8000",
+        "updatedAt": "2025-01-26T04:57:26.392Z",
+        "deletedAt": null
+      },
+      {
+        "id": 2,
+        "name": "Coca ligth",
+        "description": "Coca sin azucar",
+        "price": "1500",
+        "updatedAt": "2025-01-26T04:57:26.392Z",
+        "deletedAt": null
+      }
+    ],
+    "id": 1,
+    "orderDate": "2025-01-26T04:58:49.892Z",
+    "isDeleted": false
+  }
+  \`\`\`
+
+#### Update an order
+
+- **URL:** \`PUT http://localhost:3000/api/orders/1/1\` (First 1 is order ID, second 1 is user ID)
+- **Headers:** \`Authorization: Bearer <token>\`
+
+#### Get user's orders
+
+- **URL:** \`GET http://localhost:3000/api/orders/1\` (1 is the user ID)
+- **Headers:** \`Authorization: Bearer <token>\`
+
+#### Delete an order
+
+- **URL:** \`DELETE http://localhost:3000/api/orders/1/1\` (First 1 is order ID, second 1 is user ID)
+- **Headers:** \`Authorization: Bearer <token>\`
+
+#### Get order status
+
+- **URL:** \`GET http://localhost:3000/api/orders/1/status\` (1 is the order ID)
+- **Headers:** \`Authorization: Bearer <token>\`
+
+## Note
+
+Always include the JWT token in the Authorization header for authenticated requests.
+
+## Developer
+
+This Delivery Challenge API was developed by Nicolás Contigliani, a Fullstack Developer.
+
+Connect with Nicolás:
+- LinkedIn: [https://www.linkedin.com/in/nicolas-contigliani/](https://www.linkedin.com/in/nicolas-contigliani/)
+
